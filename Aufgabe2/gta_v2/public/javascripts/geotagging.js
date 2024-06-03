@@ -133,8 +133,10 @@ function updateLocation() {
 
     
     const mapPic = document.getElementById('mapView');
+    const Result = document.getElementById('ResultMap');
     const liElements = document.getElementById('discoveryResults');
-    liElements.remove();
+    //liElements.remove();
+    Result.remove();
     mapPic.remove();   
 }
 // Wait for the page to fully load its DOM content, then call updateLocation
@@ -142,3 +144,4 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Please change the script 'geotagging.js'");
     updateLocation();
 });
+

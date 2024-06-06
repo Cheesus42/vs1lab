@@ -21,7 +21,8 @@ const router = express.Router();
  */
 // eslint-disable-next-line no-unused-vars
 const GeoTag = require('../models/geotag');
-
+const GeoTagExamples = require('../models/geotag-examples');
+const examples = new GeoTagExamples;
 /**
  * The module "geotag-store" exports a class GeoTagStore. 
  * It provides an in-memory store for geotag objects.
@@ -30,7 +31,7 @@ const GeoTag = require('../models/geotag');
  */
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
-
+var store = new GeoTagStore();
 /**
  * Route '/' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -42,7 +43,13 @@ const GeoTagStore = require('../models/geotag-store');
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  res.render('index', { taglist: [] })
+
+  examples.readGeoTags(store);
+  res.render('index', { 
+    taglist: [],
+    latitude: null,
+    longitude: null
+  })
 });
 
 /**
@@ -62,6 +69,22 @@ router.get('/', (req, res) => {
 
 // TODO: ... your code here ...
 
+
+router.post('/tagging', (req, res) => {
+  var latitude = req.body.latitude;
+  var longitude = req.body.longitude;
+  var name = req.body.name;
+  var hashtag = req.body.hashtag;
+
+  var newTag = new GeoTag(name, latitude, longitude, hashtag);
+
+  store.addGeoTag(newTag);
+  res.render('index', {
+    taglist: store.getNearbyGeoTags(latitude,longitude, 100),
+    latitude: latitude,
+    longitude: longitude
+  });
+});
 /**
  * Route '/discovery' for HTTP 'POST' requests.
  * (http://expressjs.com/de/4x/api.html#app.post.method)
@@ -79,5 +102,16 @@ router.get('/', (req, res) => {
  */
 
 // TODO: ... your code here ...
-
+router.post('/discovery', (req, res) => {
+  const latitude = req.body.latitude;
+  const longitude = req.body.longitude;
+  const Search = req.body.SearchField;
+  const list = store.searchNearbyGeoTags(latitude, longitude, Search, 100);
+    console.log(list);
+    res.render('index', {
+      taglist: list,
+      latitude: latitude,
+      longitude: longitude
+    });
+});
 module.exports = router;

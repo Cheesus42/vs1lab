@@ -39,6 +39,8 @@
         this.#markers = L.layerGroup().addTo(this.#map);
     }
 
+    
+
     /**
     * Update the Markers of a Leaflet map
     * @param {number} latitude The map center latitude
@@ -46,6 +48,7 @@
     * @param {{latitude, longitude, name}[]} tags The map tags, defaults to just the current location
     */
     updateMarkers(latitude, longitude, tags = []) {
+       
         // delete all markers
         this.#markers.clearLayers();
         L.marker([latitude, longitude], { icon: this.#defaultIcon })

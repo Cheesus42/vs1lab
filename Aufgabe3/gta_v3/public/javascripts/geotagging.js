@@ -100,11 +100,12 @@ class MapManager {
     updateMarkers(latitude, longitude, tags = []) {
         // delete all markers
         this.#markers.clearLayers();
-        L.marker([latitude, longitude])
+        L.marker([/*latitude*/49.0112, longitude])
+
             .bindPopup("Your Location")
             .addTo(this.#markers);
         for (const tag of tags) {
-            L.marker([tag.location.latitude,tag.location.longitude])
+            L.marker([tag.latitude,tag.longitude])
                 .bindPopup(tag.name)
                 .addTo(this.#markers);  
         }
@@ -119,16 +120,24 @@ class MapManager {
 // ... your code here ...
 function updateLocation() {
     LocationHelper.findLocation((helper) => {
+        const mapElement = document.getElementById("map");
+        const tagsJson = mapElement.getAttribute("data-tags");
+        let ttags = [];
+
+    if (tagsJson){
+        ttags = JSON.parse(tagsJson);
+    }
         var longitude = helper.longitude;
         var latitude = helper.latitude;
         document.getElementById('Tag-latitude').value = latitude;
         document.getElementById('Tag-longitude').value = longitude;
         document.getElementById('disc-long').value = longitude;
         document.getElementById('disc-lat').value = latitude;
-
+        console.dir(ttags);
         var map = new MapManager();
         map.initMap(latitude, longitude, 18);
-        map.updateMarkers(latitude, longitude);
+        map.updateMarkers(latitude, longitude, ttags);
+
     })
 
     
@@ -140,5 +149,6 @@ function updateLocation() {
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
     // alert("Please change the script 'geotagging.js'");
+    
     updateLocation();
 });

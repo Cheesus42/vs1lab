@@ -43,8 +43,7 @@
                     <label for="Tag-name">Name:</label>
                     <input id="Tag-name" maxlength="10" type="text" name="name" placeholder="e.g. Central Berlin" pattern="[a-zA-Z]*" required>
                     <label for="Tag-hashtag">Hashtag:</label>
-                    <input id="Tag-hashtag" maxlength="11" type="text" name="hashtag" placeholder="e.g. #ber" pattern="#.[a-zA-Z]*" title="Muss mit # anfangen">
-                    
+                    <input id="Tag-hashtag" maxlength="11" type="text" name="hashtag" placeholder="e.g. #ber" pattern="#.[a-zA-Z]*" title="Muss mit # anfangen"> 
                     <input id="Send-Tag-Button" type="submit" name="SendTag" value="Add Tag">
                 </fieldset>
             </form>
@@ -77,7 +76,8 @@
                     </ul>
                 </div>
 
-                <div class="discovery__map" id="map">
+                <div class="discovery__map" id="map" data-tags='<%= JSON.stringify(taglist) %>'>
+                
                     <img src="./images/mapview.jpg" alt="a map with locations" id="mapView" />
                     <span id="ResultMap">Result map</span>
                 </div>

@@ -100,7 +100,7 @@ class MapManager {
     updateMarkers(latitude, longitude, tags = []) {
         // delete all markers
         this.#markers.clearLayers();
-        L.marker([/*latitude*/49.0112, longitude])
+        L.marker([latitude, longitude])
 
             .bindPopup("Your Location")
             .addTo(this.#markers);

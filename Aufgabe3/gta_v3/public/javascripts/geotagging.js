@@ -23,16 +23,23 @@ function updateLocation() {
 
     if(latitude == "" || longitude == "" || discLatitude == "" || discLongitude == ""){
         LocationHelper.findLocation((helper) => {
+            const mapElement = document.getElementById("map");
+            const tagsJson = mapElement.getAttribute("data-tags");
+            let ttags = [];
+            if (tagsJson){
+                ttags = JSON.parse(tagsJson);
+            }
+
             var longitude = helper.longitude;
             var latitude = helper.latitude;
             document.getElementById('Tag-latitude').value = latitude;
             document.getElementById('Tag-longitude').value = longitude;
             document.getElementById('disc-long').value = longitude;
             document.getElementById('disc-lat').value = latitude;
-    
+            console.dir(ttags);
             var map = new MapManager();
             map.initMap(latitude, longitude, 18);
-            map.updateMarkers(latitude, longitude);
+            map.updateMarkers(latitude, longitude, ttags);
         })
     }
     

@@ -15,18 +15,6 @@ class GeoTag {
     longitude = 0;
     name;
     hashtag;
-    get latitude(){
-        return this.latitude;
-    }
-    get longitude(){
-        return this.longitude;
-    }
-    get name(){
-        return this.name;
-    }
-    get hashtag(){
-        return this.tag;
-    }
     constructor(name, latitude, longitude, hashtag){
         this.latitude = latitude;
         this.longitude = longitude;

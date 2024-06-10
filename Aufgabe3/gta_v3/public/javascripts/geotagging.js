@@ -133,7 +133,7 @@ function updateLocation() {
         document.getElementById('Tag-longitude').value = longitude;
         document.getElementById('disc-long').value = longitude;
         document.getElementById('disc-lat').value = latitude;
-        console.dir(ttags);
+
         var map = new MapManager();
         map.initMap(latitude, longitude, 18);
         map.updateMarkers(latitude, longitude, ttags);

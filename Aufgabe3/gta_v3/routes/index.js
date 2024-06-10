@@ -44,8 +44,9 @@ examples.readGeoTags(store);
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
+  
   res.render('index', { 
-    taglist: [],
+    taglist: store.getAllTags(),
     latitude: null,
     longitude: null
   })

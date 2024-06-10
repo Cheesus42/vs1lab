@@ -27,7 +27,9 @@ class InMemoryGeoTagStore{
     #TagArray = [];
 
     // TODO: ... your code here ...
-
+    getAllTags(){
+        return this.#TagArray;
+    }
     addGeoTag(geotag) {
         this.#TagArray.push(geotag);
     }
@@ -54,6 +56,7 @@ class InMemoryGeoTagStore{
         return TagInRadius;
     }
     searchNearbyGeoTags(lat, long, key, radius){
+        //substream
         const countTag = this.#TagArray.length;
         var TagInRadius = [];
         if (key != undefined){
@@ -61,8 +64,8 @@ class InMemoryGeoTagStore{
             for (let i = 0; i < countTag; i++) {
                 const thisLon = this.#TagArray[i].longitude;
                 const thisLat = this.#TagArray[i].latitude;
-
-                const isKey = (this.#TagArray[i].name == key) || (this.#TagArray[i].hashtag == key);
+                
+                const isKey = (this.#TagArray[i].name.toLowerCase().includes(key.toLowerCase())) || (this.#TagArray[i].hashtag.toLowerCase().includes(key.toLowerCase()));
                 console.log(isKey);
                 console.log(this.#TagArray[i].name);
                 console.log(this.#TagArray[i].hashtag);

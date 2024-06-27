@@ -12,6 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
+router.use( express.json());
 
 /**
  * The module "geotag" exports a class GeoTagStore. 
@@ -29,6 +30,10 @@ const examples = new GeoTagExamples;
  * 
  * TODO: implement the module in the file "../models/geotag-store.js"
  */
+
+
+
+
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
 var store = new GeoTagStore();
@@ -128,8 +133,11 @@ router.post('/discovery', (req, res) => {
  * If 'latitude' and 'longitude' are available, it will be further filtered based on radius.
  */
 
-// TODO: ... your code here ...
-
+router.get('/api/geotags', (req,res) => {
+  const tags = store.getAllTags();
+  console.log(tags);
+  res.status(200).json(tags)
+});
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
@@ -142,8 +150,24 @@ router.post('/discovery', (req, res) => {
  * The new resource is rendered as JSON in the response.
  */
 
-// TODO: ... your code here ...
+router.post('/api/geotags', (req, res) => {
+  try {
+    var latitude = req.body.latitude;
+    var longitude = req.body.longitude;
+    var name = req.body.name;
+    var hashtag = req.body.hashtag;
 
+    var newTag = new GeoTag(name, latitude, longitude, hashtag);
+    
+    console.log(newTag);
+    store.addGeoTag(newTag);
+
+    res.status(201).json(newTag);
+  } catch (err) {
+    console.error('Error saving GeoTag:', err);
+    res.status(500).json({ error: 'Failed to save GeoTag' });
+  }
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'GET' requests.

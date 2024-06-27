@@ -163,7 +163,6 @@ label{
   height: 480px;
   width: 480px;
 }
-
 #mapView{
   display: block;
   width: 100%;
@@ -183,6 +182,9 @@ span{
 }
 ul{
   list-style-type: none;
+  height: 480px;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 li{
   background-color: #d8dce4;
@@ -206,7 +208,8 @@ footer{
   background-color: antiquewhite;
   padding-left: 10px;
 }
-
+/*ul{height:200px; width:18%;}
+ul{overflow:hidden; overflow-y:scroll;}*/
 
 /* ### TODO ### Media Queries */
 @media screen and (max-width: 962px){

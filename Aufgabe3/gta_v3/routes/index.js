@@ -32,6 +32,7 @@ const examples = new GeoTagExamples;
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
 var store = new GeoTagStore();
+examples.readGeoTags(store);
 /**
  * Route '/' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -43,10 +44,9 @@ var store = new GeoTagStore();
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-
-  examples.readGeoTags(store);
+  
   res.render('index', { 
-    taglist: [],
+    taglist: store.getAllTags(),
     latitude: null,
     longitude: null
   })

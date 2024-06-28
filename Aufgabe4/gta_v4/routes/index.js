@@ -12,6 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
+router.use(express.json());
 
 /**
  * The module "geotag" exports a class GeoTagStore. 
@@ -129,7 +130,7 @@ router.post('/discovery', (req, res) => {
  */
 
 // TODO: ... your code here ...
-
+router.get()
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.

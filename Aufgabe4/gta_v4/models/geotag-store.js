@@ -43,6 +43,8 @@ class InMemoryGeoTagStore{
     getNearbyGeoTags(lat,long, radius){
         const countTag = this.#TagArray.length;
         var TagInRadius = [];
+        
+        var data = {"keyword": 123};
 
         for (let i = 0; i < countTag; i++) {
             const thisLon = this.#TagArray[i].longitude;

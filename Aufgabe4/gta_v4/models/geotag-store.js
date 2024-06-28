@@ -25,8 +25,8 @@
  */
 class InMemoryGeoTagStore{
     #TagArray = [];
-
-    // TODO: ... your code here ...
+    #DeletedIDs = [];
+    
     getAllTags(){
         return this.#TagArray;
     }
@@ -34,10 +34,11 @@ class InMemoryGeoTagStore{
         this.#TagArray.push(geotag);
     }
  
-    removeGeoTag(tag){
-        var index = this.#TagArray.indexOf(tag);
+    removeGeoTag(id){
+        var index = this.#TagArray.indexOf(this.getByID(id));
         if (index > -1) {
             this.#TagArray.splice(index, 1);
+            this.#DeletedIDs.push(id);
         }
     }
     getNearbyGeoTags(lat,long, radius){
@@ -80,7 +81,34 @@ class InMemoryGeoTagStore{
         return TagInRadius;
     }
     makeID(){
-        return this.#TagArray.length;
+        if(this.#DeletedIDs.length > 0){
+            var id = this.#DeletedIDs[0];
+            this.#DeletedIDs.splice(0, 1);
+            return id;
+        }else{
+            return this.#TagArray.length;
+        }
+        
+    }
+    getByID(id){
+        for (let i = 0; i < this.#TagArray.length; i++){
+            if(id == this.#TagArray[i].id){
+                return this.#TagArray[i];
+            }
+        }
+        throw new Error("Tag with Id: " + id + " not found");
+    }
+    #getIndexByID(id){
+        for (let i = 0; i < this.#TagArray.length; i++){
+            if(id == this.#TagArray[i].id){
+                return i;
+            }
+        }
+        throw new Error("Tag with Id: " + id + " not found");
+    }
+    replace(id, data){
+        var index = this.#getIndexByID(id);
+        this.#TagArray[index] = data;
     }
     #calcDistance(lat1, lon1, lat2, lon2){
         //Haversine

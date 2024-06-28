@@ -50,7 +50,6 @@ examples.readGeoTags(store);
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  
   res.render('index', { 
     taglist: store.getAllTags(),
     latitude: null,
@@ -77,12 +76,14 @@ router.get('/', (req, res) => {
 
 
 router.post('/tagging', (req, res) => {
+  var id = store.makeID();
   var latitude = req.body.latitude;
   var longitude = req.body.longitude;
   var name = req.body.name;
   var hashtag = req.body.hashtag;
+  var newTag = new GeoTag(id, name, latitude, longitude, hashtag);
 
-  var newTag = new GeoTag(name, latitude, longitude, hashtag);
+  console.log(store.getAllTags())
 
   store.addGeoTag(newTag);
   res.render('index', {
@@ -109,10 +110,11 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
+  const id = store.makeID();
   const latitude = req.body.latitude;
   const longitude = req.body.longitude;
   const Search = req.body.SearchField;
-  const list = store.searchNearbyGeoTags(latitude, longitude, Search, 100);
+  const list = store.searchNearbyGeoTags(id, latitude, longitude, Search, 100);
     console.log(list);
     res.render('index', {
       taglist: list,
@@ -154,12 +156,18 @@ router.get('/api/geotags', (req,res) => {
 
 router.post('/api/geotags', (req, res) => {
   try {
+    var assert = require('assert');
+    assert(req.body.latitude);
+    assert(req.body.longitude);
+    assert(req.body.name);
+    assert(req.body.hashtag);
+    var id = store.makeID();
     var latitude = req.body.latitude;
     var longitude = req.body.longitude;
     var name = req.body.name;
     var hashtag = req.body.hashtag;
 
-    var newTag = new GeoTag(name, latitude, longitude, hashtag);
+    var newTag = new GeoTag(id, name, latitude, longitude, hashtag);
     
     console.log(newTag);
     store.addGeoTag(newTag);
@@ -181,7 +189,7 @@ router.post('/api/geotags', (req, res) => {
  * The requested tag is rendered as JSON in the response.
  */
 
-// TODO: ... your code here ...
+
 
 
 /**
@@ -213,5 +221,4 @@ router.post('/api/geotags', (req, res) => {
  */
 
 // TODO: ... your code here ...
-
 module.exports = router;

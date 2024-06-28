@@ -9,13 +9,15 @@
  * A class representing geotags.
  * GeoTag objects should contain at least all fields of the tagging form.
  */
+const store = require('./geotag-store')
 class GeoTag {
-    // TODO: ... your code here ...
+    id;
     latitude = 0;
     longitude = 0;
     name;
     hashtag;
-    constructor(name, latitude, longitude, hashtag){
+    constructor(id, name, latitude, longitude, hashtag){
+        this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;

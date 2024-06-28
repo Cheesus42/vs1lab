@@ -33,7 +33,7 @@ class InMemoryGeoTagStore{
     addGeoTag(geotag) {
         this.#TagArray.push(geotag);
     }
-
+ 
     removeGeoTag(tag){
         var index = this.#TagArray.indexOf(tag);
         if (index > -1) {
@@ -79,6 +79,9 @@ class InMemoryGeoTagStore{
         }
         return TagInRadius;
     }
+    makeID(){
+        return this.#TagArray.length;
+    }
     #calcDistance(lat1, lon1, lat2, lon2){
         //Haversine
         const R = 6371;
@@ -95,6 +98,7 @@ class InMemoryGeoTagStore{
         const distance = R * c;
         return distance;
     }
+
 }
 
 module.exports = InMemoryGeoTagStore

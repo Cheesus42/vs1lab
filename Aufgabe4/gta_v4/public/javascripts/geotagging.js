@@ -119,7 +119,7 @@ async function handleDiscovery(event){
             newLI.textContent = result[i].name + ' ( ' + result[i].latitude + ',' + result[i].longitude + ')' + result[i].hashtag;
             discoveryWrapper.appendChild(newLI);
         }
-        
+        map.updateMarkers(latitude, longitude, result);
     }catch(err){
         console.dir(err);
     }

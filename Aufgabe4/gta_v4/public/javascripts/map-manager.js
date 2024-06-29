@@ -60,4 +60,11 @@
                 .addTo(this.#markers);  
         }
     }
+    addTagToMap(tag) {
+        L.marker([tag.latitude, tag.longitude])
+            .addTo(this.#map)
+            .bindPopup(tag.name)
+            .addTo(this.#markers)
+            .openPopup();
+    }
 }

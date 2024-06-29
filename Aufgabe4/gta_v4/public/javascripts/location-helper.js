@@ -37,7 +37,7 @@ class LocationHelper {
      * Throws an exception if the geolocation API is not available.
      * @param {*} callback a function that will be called with a LocationHelper instance as parameter, that has the current location details
      */
-    static findLocation(callback) {
+    static findLocation(callback, map) {
         const geoLocationApi = navigator.geolocation
 
         if (!geoLocationApi) {
@@ -51,7 +51,7 @@ class LocationHelper {
             // Create and initialize LocationHelper object.
             let helper = new LocationHelper(location.coords.latitude, location.coords.longitude);
             // Pass the locationHelper object to the callback.
-            callback(helper);
+            callback(helper, map);
         }, (error) => {
             alert(error.message)
         });

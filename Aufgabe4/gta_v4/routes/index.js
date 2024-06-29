@@ -162,7 +162,6 @@ router.get('/api/geotags', (req,res) => {
 
 router.post('/api/geotags', (req, res) => {
   try {
-    
     assert(req.body.latitude);
     assert(req.body.longitude);
     assert(req.body.name);

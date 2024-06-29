@@ -53,8 +53,6 @@ async function handleTagging(event){
 
     const form = event.target;
     const formData = new FormData(form);
-    //const tagData = Object.fromEntries(formData.entries);
-    //console.dir(tagData);
 
     const latitude = formData.get('latitude');
     const longitude = formData.get('longitude');
@@ -82,10 +80,46 @@ async function handleTagging(event){
         const result = await response.json();
         console.dir(result);
         map.addTagToMap(geoTag);
-        const discoveryWrapper = document.getElementById('discoveryResults')
+        const discoveryWrapper = document.getElementById('discoveryResults');
         const newLI = document.createElement('li');
         newLI.textContent = name + ' ( ' + latitude + ',' + longitude + ')' + hashtag;
         discoveryWrapper.appendChild(newLI);
+    }catch(err){
+        console.dir(err);
+    }
+}
+async function handleDiscovery(event){
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const latitude = formData.get('latitude');
+    const longitude = formData.get('longitude');
+
+    const searchForm = event.target;
+    const formData2 = new FormData(searchForm);
+    const searchTerm = formData2.get('SearchField')
+    const encTerm = encodeURIComponent(searchTerm);
+    try{
+        const response = await fetch(`/api/geotags?search-term=${encTerm}&latitude=${latitude}&longitude=${longitude}&radius=${15}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        if (!response.ok){
+            throw new Error('Failed to get Geotag');
+        }
+
+        const result = await response.json();
+        console.dir(result);
+        const discoveryWrapper = document.getElementById('discoveryResults');
+        discoveryWrapper.innerHTML = '';
+        for(let i = 0; i < result.length; i++){
+            const newLI = document.createElement('li');
+            newLI.textContent = result[i].name + ' ( ' + result[i].latitude + ',' + result[i].longitude + ')' + result[i].hashtag;
+            discoveryWrapper.appendChild(newLI);
+        }
+        
     }catch(err){
         console.dir(err);
     }
@@ -95,5 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
     map = new MapManager();
     updateLocation(map);
     const tagForm = document.getElementById('tag-form');
-    tagForm.addEventListener('submit', handleTagging);
+    const discForm = document.getElementById('discoveryFilterForm');
+
+    if(tagForm){
+        tagForm.addEventListener('submit', handleTagging);
+    }
+    if(discForm){
+        discForm.addEventListener('submit', handleDiscovery);
+    }
 });

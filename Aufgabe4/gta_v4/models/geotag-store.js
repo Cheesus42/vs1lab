@@ -45,18 +45,26 @@ class InMemoryGeoTagStore{
         const countTag = this.#TagArray.length;
         var TagInRadius = [];
         
-        var data = {"keyword": 123};
-
         for (let i = 0; i < countTag; i++) {
             const thisLon = this.#TagArray[i].longitude;
             const thisLat= this.#TagArray[i].latitude;
             if(this.#calcDistance(lat, long, thisLat, thisLon) < radius){
-                //TagInRadius[TagInRadius.length] = this.#TagArray[i];
                 TagInRadius.push(this.#TagArray[i]);
             }
         }
         //console.log(TagInRadius);
         return TagInRadius;
+    }
+    searchTags(key){
+        const countTag = this.#TagArray.length;
+        var results = [];
+        for (let i = 0; i < countTag; i++){
+            const isKey = (this.#TagArray[i].name.toLowerCase().includes(key.toLowerCase())) || (this.#TagArray[i].hashtag.toLowerCase().includes(key.toLowerCase()));
+            if(isKey){
+                results.push(this.#TagArray[i]);
+            }
+        }
+        return results;
     }
     searchNearbyGeoTags(lat, long, key, radius){
         //substream
@@ -69,10 +77,6 @@ class InMemoryGeoTagStore{
                 const thisLat = this.#TagArray[i].latitude;
                 
                 const isKey = (this.#TagArray[i].name.toLowerCase().includes(key.toLowerCase())) || (this.#TagArray[i].hashtag.toLowerCase().includes(key.toLowerCase()));
-                console.log(isKey);
-                console.log(this.#TagArray[i].name);
-                console.log(this.#TagArray[i].hashtag);
-                console.log(key);
                 if((this.#calcDistance(lat, long, thisLat, thisLon) < radius) && isKey){
                     TagInRadius.push(this.#TagArray[i]);
                 }

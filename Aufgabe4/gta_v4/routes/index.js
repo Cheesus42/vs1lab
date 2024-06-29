@@ -139,9 +139,27 @@ router.post('/discovery', (req, res) => {
 
 router.get('/api/geotags', (req,res) => {
   try{
-    const tags = store.getAllTags();
+    const searchTerm = req.query['search-term'];
+    const latitude = req.query['latitude'];
+    const longitude = req.query['longitude'];
+    const radius = req.query['radius']
+    console.log(latitude);
+    console.log(longitude);
+    var tags;
+    if(latitude && longitude && radius){
+      if(searchTerm){
+        tags = store.searchNearbyGeoTags(latitude, longitude, searchTerm, radius);
+      }else{
+        tags = store.getNearbyGeoTags(latitude, longitude, radius);
+      }
+    }else if(searchTerm){
+      tags = store.searchTags(searchTerm);
+    }else{
+      tags = store.getAllTags();
+    }
+    
     console.log(tags);
-    res.status(200).json(tags)
+    res.status(200).json(tags);
   }catch(err){
     console.error('Error getting GeoTags:', err);
     res.status(500).json({ error: 'Failed to get GeoTags' });

@@ -39,19 +39,14 @@ class GeoTagExamples {
             store.addGeoTag
             (
                 new GeoTag(
+                    store.makeID(),
                     tagList[i][0],
                     tagList[i][1],
                     tagList[i][2],
                     tagList[i][3]
                 )
             );
-            console.log(tagList[i][0]);
-            console.log(tagList[i][1]);
-            console.log(tagList[i][2]);
-            console.log(tagList[i][3]);
         }
     }
-
-
 }
 module.exports = GeoTagExamples;

@@ -12,6 +12,8 @@
 
 const express = require('express');
 const router = express.Router();
+var assert = require('assert');
+router.use(express.json());
 
 /**
  * The module "geotag" exports a class GeoTagStore. 
@@ -29,6 +31,10 @@ const examples = new GeoTagExamples;
  * 
  * TODO: implement the module in the file "../models/geotag-store.js"
  */
+
+
+
+
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
 var store = new GeoTagStore();
@@ -44,7 +50,6 @@ examples.readGeoTags(store);
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  
   res.render('index', { 
     taglist: store.getAllTags(),
     latitude: null,
@@ -71,12 +76,14 @@ router.get('/', (req, res) => {
 
 
 router.post('/tagging', (req, res) => {
+  var id = store.makeID();
   var latitude = req.body.latitude;
   var longitude = req.body.longitude;
   var name = req.body.name;
   var hashtag = req.body.hashtag;
+  var newTag = new GeoTag(id, name, latitude, longitude, hashtag);
 
-  var newTag = new GeoTag(name, latitude, longitude, hashtag);
+  console.log(store.getAllTags())
 
   store.addGeoTag(newTag);
   res.render('index', {
@@ -103,10 +110,11 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
+  const id = store.makeID();
   const latitude = req.body.latitude;
   const longitude = req.body.longitude;
   const Search = req.body.SearchField;
-  const list = store.searchNearbyGeoTags(latitude, longitude, Search, 100);
+  const list = store.searchNearbyGeoTags(id, latitude, longitude, Search, 100);
     console.log(list);
     res.render('index', {
       taglist: list,
@@ -128,8 +136,36 @@ router.post('/discovery', (req, res) => {
  * If 'latitude' and 'longitude' are available, it will be further filtered based on radius.
  */
 
-// TODO: ... your code here ...
 
+router.get('/api/geotags', (req,res) => {
+  try{
+    const searchTerm = req.query['search-term'];
+    const latitude = req.query['latitude'];
+    const longitude = req.query['longitude'];
+    const radius = req.query['radius']
+    console.log(latitude);
+    console.log(longitude);
+    var tags;
+    if(latitude && longitude && radius){
+      if(searchTerm){
+        tags = store.searchNearbyGeoTags(latitude, longitude, searchTerm, radius);
+      }else{
+        tags = store.getNearbyGeoTags(latitude, longitude, radius);
+      }
+    }else if(searchTerm){
+      tags = store.searchTags(searchTerm);
+    }else{
+      tags = store.getAllTags();
+    }
+    
+    console.log(tags);
+    res.status(200).json(tags);
+  }catch(err){
+    console.error('Error getting GeoTags:', err);
+    res.status(500).json({ error: 'Failed to get GeoTags' });
+  }
+  
+});
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
@@ -142,8 +178,29 @@ router.post('/discovery', (req, res) => {
  * The new resource is rendered as JSON in the response.
  */
 
-// TODO: ... your code here ...
+router.post('/api/geotags', (req, res) => {
+  try {
+    assert(req.body.latitude);
+    assert(req.body.longitude);
+    assert(req.body.name);
+    assert(req.body.hashtag);
+    var id = store.makeID();
+    var latitude = req.body.latitude;
+    var longitude = req.body.longitude;
+    var name = req.body.name;
+    var hashtag = req.body.hashtag;
 
+    var newTag = new GeoTag(id, name, latitude, longitude, hashtag);
+    
+    console.log(newTag);
+    store.addGeoTag(newTag);
+
+    res.status(201).json(newTag);
+  } catch (err) {
+    console.error('Error saving GeoTag:', err);
+    res.status(500).json({ error: 'Failed to save GeoTag' });
+  }
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'GET' requests.
@@ -154,8 +211,17 @@ router.post('/discovery', (req, res) => {
  *
  * The requested tag is rendered as JSON in the response.
  */
+router.get('/api/geotags/:id', (req, res) => {
+  try{
+    const id = parseInt(req.params.id);
+    const element = store.getByID(id);
+    res.status(200).json(element);
+  }catch(err){
+    console.error('Error getting GeoTag:', err);
+    res.status(404).json({ error: 'Failed to find GeoTag' });
+  }
+});
 
-// TODO: ... your code here ...
 
 
 /**
@@ -172,8 +238,26 @@ router.post('/discovery', (req, res) => {
  * The updated resource is rendered as JSON in the response. 
  */
 
-// TODO: ... your code here ...
+router.put('/api/geotags/:id', (req, res) => {
+  try{
+    const id = parseInt(req.params.id);
+    assert(req.body.latitude);
+    assert(req.body.longitude);
+    assert(req.body.name);
+    assert(req.body.hashtag);
+    var latitude = req.body.latitude;
+    var longitude = req.body.longitude;
+    var name = req.body.name;
+    var hashtag = req.body.hashtag;
 
+    var newTag = new GeoTag(id, name, latitude, longitude, hashtag);
+    store.replace(id, newTag);
+    res.status(200).json(newTag);
+  }catch(err){
+    console.error('Bad Request', err);
+    res.status(400).json({error: 'Bad Request'});
+  }
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'DELETE' requests.
@@ -185,7 +269,14 @@ router.post('/discovery', (req, res) => {
  * Deletes the tag with the corresponding ID.
  * The deleted resource is rendered as JSON in the response.
  */
-
-// TODO: ... your code here ...
-
+router.delete('/api/geotags/:id', (req, res) => {
+  try{
+    const id = parseInt(req.params.id);
+    store.removeGeoTag(id);
+    res.status(200).json();
+  }catch(err){
+    console.error('Bad Request', err);
+    res.status(400).json({error: 'Bad Request'});
+  }
+});
 module.exports = router;
